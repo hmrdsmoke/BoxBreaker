@@ -1,0 +1,14 @@
+ # MIT LICENSING see licnse for full details
+ # Copy Right By Michael Van Auker (HMRDSmoke)
+ # This is my original work with contributions from ChatGPT
+  
+ # Do NOT Remove These Comments
+
+
+[workspace]
+members = [
+    "app",
+    "heart"
+]
+
+resolver = "2"
