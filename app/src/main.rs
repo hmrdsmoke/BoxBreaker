@@ -1,6 +1,8 @@
 mod card_ui;
 mod widgets;
 
+use std::path::PathBuf;
+
 use heart::database::CardDatabase;
 use heart::seed::build_seed_database;
 
@@ -18,11 +20,37 @@ struct App {
     database: CardDatabase,
 }
 
+fn load_database() -> CardDatabase {
+    let db_path = dirs::data_local_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join("boxbreaker")
+        .join("cards.json");
+
+    if db_path.exists() {
+        match CardDatabase::load_from_file(&db_path) {
+            Ok(db) => {
+                eprintln!("Loaded {} cards from {}", db.card_count(), db_path.display());
+                return db;
+            }
+            Err(e) => {
+                eprintln!("Failed to load database: {e}, using seed data");
+            }
+        }
+    } else {
+        eprintln!(
+            "No synced database found at {}. Run `cargo run -p sync` to fetch all cards. Using seed data.",
+            db_path.display()
+        );
+    }
+
+    build_seed_database()
+}
+
 impl Default for App {
     fn default() -> Self {
         Self {
             search: String::new(),
-            database: build_seed_database(),
+            database: load_database(),
         }
     }
 }
