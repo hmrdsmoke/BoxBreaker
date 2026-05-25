@@ -1,17 +1,19 @@
  # MIT LICENSING see licnse for full details
  # Copy Right By Michael Van Auker (HMRDSmoke)
  # This is my original work with contributions from ChatGPT
-  
+ 
  # Do NOT Remove These Comments
- 
- 
+
+
 [package]
-name = "app"
+name = "sync"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-iced = { version = "0.14.0", features = ["tokio", "image"] }
 heart = { path = "../heart" }
 tokio = { version = "1.0.0", features = ["full"] }
+reqwest = { version = "0.13.0", features = ["json", "stream"] }
+anyhow = "1.0.0"
+serde_json = "1"
 dirs = "6"
