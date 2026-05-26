@@ -8,11 +8,17 @@ use heart::seed::build_seed_database;
 
 use iced::{
     widget::{column, container, row, scrollable, space, text, text_input, Column},
-    Element, Length, Task,
+    Element, Length, Size, Task, Theme,
 };
 
 fn main() -> iced::Result {
-    iced::run(App::update, App::view)
+    iced::application(App::default, update, view)
+        .title("BoxBreaker Pricing")
+        .window_size(Size::new(900.0, 700.0))
+        .centered()
+        .theme(dark_theme)
+        .antialiasing(true)
+        .run()
 }
 
 struct App {
@@ -60,87 +66,89 @@ enum Message {
     SearchChanged(String),
 }
 
-impl App {
-    fn update(&mut self, message: Message) -> Task<Message> {
-        match message {
-            Message::SearchChanged(value) => {
-                self.search = value;
-            }
+fn dark_theme(_app: &App) -> Theme {
+    Theme::Dark
+}
+
+fn update(app: &mut App, message: Message) -> Task<Message> {
+    match message {
+        Message::SearchChanged(value) => {
+            app.search = value;
         }
-
-        Task::none()
     }
 
-    fn view(&self) -> Element<'_, Message, iced::Theme> {
-        let results = self.database.search(&self.search);
+    Task::none()
+}
 
-        let header = column![
-            text("BOXBREAKER").size(40),
-            text_input("Search cards...", &self.search)
-                .on_input(Message::SearchChanged)
-                .padding(12),
-        ]
-        .spacing(12);
+fn view(app: &App) -> Element<'_, Message, Theme> {
+    let results = app.database.search(&app.search);
 
-        let result_count = text(format!("{} cards found", results.len())).size(14);
+    let header = column![
+        text("BOXBREAKER").size(40),
+        text_input("Search cards...", &app.search)
+            .on_input(Message::SearchChanged)
+            .padding(12),
+    ]
+    .spacing(12);
 
-        let card_list: Element<'_, Message, iced::Theme> = if results.is_empty() {
-            container(text("No cards match your search.").size(16))
-                .padding(20)
-                .into()
-        } else {
-            let cards: Vec<Element<'_, Message, iced::Theme>> = results
-                .iter()
-                .map(|card| {
-                    let price_display =
-                        if let Some(price) = self.database.price_index.latest_price(&card.id) {
-                            format!("${:.2}", price.price_dollars())
-                        } else {
-                            "N/A".to_string()
-                        };
+    let result_count = text(format!("{} cards found", results.len())).size(14);
 
-                    let name_and_price = row![
-                        text(&card.name).size(18),
-                        space::horizontal(),
-                        text(price_display).size(18),
-                    ]
-                    .spacing(8);
+    let card_list: Element<'_, Message, Theme> = if results.is_empty() {
+        container(text("No cards match your search.").size(16))
+            .padding(20)
+            .into()
+    } else {
+        let cards: Vec<Element<'_, Message, Theme>> = results
+            .iter()
+            .map(|card| {
+                let price_display =
+                    if let Some(price) = app.database.price_index.latest_price(&card.id) {
+                        format!("${:.2}", price.price_dollars())
+                    } else {
+                        "N/A".to_string()
+                    };
 
-                    let details = row![
-                        text(card.game.to_string()).size(12),
-                        text(" · ").size(12),
-                        text(&card.set_name).size(12),
-                        text(" · ").size(12),
-                        text(card.rarity.to_string()).size(12),
-                    ]
-                    .spacing(0);
+                let name_and_price = row![
+                    text(&card.name).size(18),
+                    space::horizontal(),
+                    text(price_display).size(18),
+                ]
+                .spacing(8);
 
-                    let card_type_line = text(&card.card_type).size(11);
+                let details = row![
+                    text(card.game.to_string()).size(12),
+                    text(" · ").size(12),
+                    text(&card.set_name).size(12),
+                    text(" · ").size(12),
+                    text(card.rarity.to_string()).size(12),
+                ]
+                .spacing(0);
 
-                    container(
-                        column![name_and_price, details, card_type_line]
-                            .spacing(4)
-                            .width(Length::Fill),
-                    )
-                    .padding(12)
-                    .width(Length::Fill)
-                    .style(card_ui::card_row_style)
-                    .into()
-                })
-                .collect();
+                let card_type_line = text(&card.card_type).size(11);
 
-            scrollable(Column::with_children(cards).spacing(8))
-                .height(Length::Fill)
-                .into()
-        };
-
-        let content: Element<'_, Message, iced::Theme> =
-            column![header, result_count, card_list]
-                .spacing(16)
+                container(
+                    column![name_and_price, details, card_type_line]
+                        .spacing(4)
+                        .width(Length::Fill),
+                )
+                .padding(12)
                 .width(Length::Fill)
-                .height(Length::Fill)
-                .into();
+                .style(card_ui::card_row_style)
+                .into()
+            })
+            .collect();
 
-        card_ui::CardUI::wrap_full(content)
-    }
+        scrollable(Column::with_children(cards).spacing(8))
+            .height(Length::Fill)
+            .into()
+    };
+
+    let content: Element<'_, Message, Theme> =
+        column![header, result_count, card_list]
+            .spacing(16)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .into();
+
+    card_ui::CardUI::wrap_full(content)
 }
