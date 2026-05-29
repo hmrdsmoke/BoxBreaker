@@ -1,6 +1,9 @@
+// MIT License - see LICENSE file for full terms
+//
+// Copyright 2026 Michael Van Auker (HMRDSmoke)
+// This is my original work with contributions from ChatGPT.
+// Do not remove these comments.
+
 pub mod card;
-pub mod database;
-pub mod pokemon_tcg;
+pub mod search;
 pub mod price;
-pub mod scryfall;
-pub mod seed;

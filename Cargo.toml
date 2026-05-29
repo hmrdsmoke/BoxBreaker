@@ -1,9 +1,8 @@
- # MIT LICENSING see licnse for full details
- # Copy Right By Michael Van Auker (HMRDSmoke)
- # This is my original work with contributions from ChatGPT
-  
- # Do NOT Remove These Comments
+# MIT LICENSING see license for full details
+# Copy Right By Michael Van Auker (HMRDSmoke)
+# This is my original work with contributions from ChatGPT
 
+# Do NOT Remove These Comments
 
 [workspace]
 members = [
@@ -11,5 +10,6 @@ members = [
     "heart",
     "sync"
 ]
-
 resolver = "2"
+
+default-members = ["app"]

@@ -1,29 +1,12 @@
- # MIT LICENSING see licnse for full details
- # Copy Right By Michael Van Auker (HMRDSmoke)
- # This is my original work with contributions from ChatGPT
-  
- # Do NOT Remove These Comments
- 
- 
+# MIT License - see LICENSE file for full terms
+# Copyright 2026 Michael Van Auker (HMRDSmoke)
+# This is my original work with contributions from ChatGPT
+# Do not remove these comments.
+
 [package]
 name = "heart"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-serde = { version = "1.0.0", features = ["derive"] }
-serde_json = "1"
-
-tokio = { version = "1.0.0", features = ["full"] }
-
-reqwest = { version = "0.13.0", features = ["json", "stream"] }
-
-anyhow = "1.0.0"
-thiserror = "2.0.0"
-
-uuid = { version = "1.0.0", features = ["v4", "serde"] }
-
-chrono = { version = "0.4.0", features = ["serde"] }
-
-futures = "0.3"
-tokio-stream = "0.1"
+serde = { version = "1", features = ["derive"] }
