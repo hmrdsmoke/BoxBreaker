@@ -1,5 +1,22 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PriceSnapshot {
+    pub timestamp: i64,
+    pub tcgplayer_low: Option<f32>,
+    pub tcgplayer_mid: Option<f32>,
+    pub tcgplayer_high: Option<f32>,
+    pub cardmarket_low: Option<f32>,
+    pub cardmarket_mid: Option<f32>,
+    pub cardmarket_high: Option<f32>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct PriceHistory {
+    pub card_id: String,
+    pub snapshots: Vec<PriceSnapshot>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct CardPrice {
     pub card_id: String,

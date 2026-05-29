@@ -8,3 +8,6 @@ pub mod search_ui;
 pub mod menu_ui;
 pub mod grid_ui;
 pub mod cardart_ui;
+pub mod graph_ui;
+pub mod collection_ui;
+pub mod scan_ui;

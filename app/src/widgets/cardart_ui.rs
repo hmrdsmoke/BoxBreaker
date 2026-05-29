@@ -1,10 +1,18 @@
 use iced::{Element, Length};
-use iced::widget::{column, text, container, scrollable, image, row};
+use iced::widget::{column, text, container, scrollable, image, row, button};
 
-use super::super::ui::UiState;
-use super::super::ui::Message;
+use super::super::ui::{UiState, Message};
 
 pub fn view(state: &UiState) -> Element<'_, Message> {
+    let tab_row = row![
+        button(text("Card")).on_press(Message::TabSelected(0)),
+        button(text("History")).on_press(Message::TabSelected(1)),
+        button(text("Collection")).on_press(Message::TabSelected(2)),
+        button(text("Scanner")).on_press(Message::TabSelected(3)),
+    ]
+    .spacing(8)
+    .padding(10);
+
     if state.loading {
         return container(text("Loading card database..."))
             .center_x(Length::Fill)
@@ -40,9 +48,9 @@ pub fn view(state: &UiState) -> Element<'_, Message> {
                 if let Some(tcg) = &price.tcgplayer {
                     info_col = info_col.push(text(format!(
                         "TCGPlayer  Low: {}  Mid: {}  High: {}",
-                        fmt_price(tcg.low, &tcg.currency),
-                        fmt_price(tcg.mid, &tcg.currency),
-                        fmt_price(tcg.high, &tcg.currency),
+                        fmt_price(tcg.low),
+                        fmt_price(tcg.mid),
+                        fmt_price(tcg.high),
                     )));
                 } else {
                     info_col = info_col.push(text("TCGPlayer: no results"));
@@ -51,17 +59,22 @@ pub fn view(state: &UiState) -> Element<'_, Message> {
                 if let Some(cm) = &price.cardmarket {
                     info_col = info_col.push(text(format!(
                         "CardMarket  Low: {}  Mid: {}  High: {}",
-                        fmt_price(cm.low, &cm.currency),
-                        fmt_price(cm.mid, &cm.currency),
-                        fmt_price(cm.high, &cm.currency),
+                        fmt_price(cm.low),
+                        fmt_price(cm.mid),
+                        fmt_price(cm.high),
                     )));
                 } else {
                     info_col = info_col.push(text("CardMarket: no results"));
                 }
             }
+
+            info_col = info_col.push(text(" "));
+            info_col = info_col.push(
+                button(text("+ Add to Collection"))
+                    .on_press(Message::AddToCollection)
+            );
         }
 
-        // Image panel
         let image_panel: Element<Message> = if state.image_loading {
             text("Loading image...").into()
         } else if let Some(bytes) = &state.selected_card_image {
@@ -86,18 +99,18 @@ pub fn view(state: &UiState) -> Element<'_, Message> {
         ]
     };
 
-    container(content)
-        .width(Length::Fill)
-        .height(Length::Fill)
-        .into()
+    column![
+        tab_row,
+        container(content)
+            .width(Length::Fill)
+            .height(Length::Fill),
+    ]
+    .into()
 }
 
-fn fmt_price(val: Option<f32>, currency: &str) -> String {
+fn fmt_price(val: Option<f32>) -> String {
     match val {
-        Some(v) => {
-            let symbol = if currency == "EUR" { "€" } else { "$" };
-            format!("{}{:.2}", symbol, v)
-        }
+        Some(v) => format!("${:.2}", v),
         None => "N/A".to_string(),
     }
 }

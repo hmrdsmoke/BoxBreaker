@@ -7,3 +7,4 @@
 pub mod card;
 pub mod search;
 pub mod price;
+pub mod collection;

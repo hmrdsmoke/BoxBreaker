@@ -103,6 +103,7 @@ pub async fn fetch_prices(card_id: &str, card_name: &str, game: &str) -> CardPri
     };
 
     let _ = cache::save(&price).await;
+    cache::append_history(&price).await;
     price
 }
 

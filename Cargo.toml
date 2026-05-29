@@ -8,7 +8,8 @@
 members = [
     "app",
     "heart",
-    "sync"
+    "sync",
+    "eyes"
 ]
 resolver = "2"
 
